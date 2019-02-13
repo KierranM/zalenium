@@ -106,6 +106,21 @@ hub:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
+  sharedVolume:
+    enabled: false
+    ## If true will use existing PVC instead of creating one
+    useExisting: false
+    ## Name of existing PVC to be used in the zalenium deployment
+    name:
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteMany
+    size: 10Gi
   data:
     enabled: false
     ## If true will use existing PVC instead of creating one

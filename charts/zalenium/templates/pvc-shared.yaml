@@ -1,0 +1,21 @@
+{{- if and (.Values.persistence.sharedVolume.enabled) (not .Values.persistence.sharedVolume.useExisting) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: "{{ template "zalenium.fullname" . }}-shared"
+  labels:
+    {{- include "zalenium.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.sharedVolume.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.sharedVolume.size | quote }}
+  {{- if .Values.persistence.sharedVolume.storageClass }}
+  {{- if (eq "-" .Values.persistence.sharedVolume.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: "{{ .Values.persistence.sharedVolume.storageClass }}"
+  {{- end }}
+  {{- end }}
+{{- end }}

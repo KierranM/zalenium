@@ -14,6 +14,20 @@ spec:
     - name: {{ .Values.hub.imagePullSecret }}
   {{- end}}
   volumes:
+  {{- if .Values.persistence.sharedVolume.enabled }}
+    - name: {{ template "zalenium.fullname" . }}-shared
+    {{- if .Values.persistence.sharedVolume.enabled }}
+      {{- if and (.Values.persistence.sharedVolume.useExisting) (not (empty .Values.persistence.sharedVolume.name))}}
+      persistentVolumeClaim:
+        claimName: {{ .Values.persistence.sharedVolume.name }}
+      {{- else }}
+      persistentVolumeClaim:
+        claimName: {{ template "zalenium.fullname" . }}-shared
+      {{- end }}
+    {{- else }}
+      emptyDir: {}
+    {{- end }}
+  {{- else }}
     - name: {{ template "zalenium.fullname" . }}-videos
     {{- if .Values.persistence.video.enabled }}
       {{- if and (.Values.persistence.video.useExisting) (not (empty .Values.persistence.video.name))}}
@@ -38,6 +52,7 @@ spec:
     {{- else }}
       emptyDir: {}
     {{- end }}
+  {{- end }}
   containers:
     - name: {{ .Chart.Name }}
       image: "{{ .Values.hub.image }}:{{ .Values.hub.tag }}"
@@ -148,10 +163,19 @@ spec:
       resources:
         {{- toYaml .Values.hub.resources | nindent 8 }}
       volumeMounts:
+      {{- if .Values.persistence.sharedVolume.enabled }}
+        - name: {{ template "zalenium.fullname" . }}-shared
+          mountPath: /home/seluser/videos
+          subPath: videos
+        - name: {{ template "zalenium.fullname" . }}-shared
+          mountPath: /tmp/mounted
+          subPath: data
+      {{- else }}
         - name: {{ template "zalenium.fullname" . }}-videos
           mountPath: /home/seluser/videos
         - name: {{ template "zalenium.fullname" . }}-data
           mountPath: /tmp/mounted
+      {{- end }}
   serviceAccountName: {{ template "zalenium.serviceAccountName" . }}
   {{- if .Values.nodeSelector.enabled }}
   nodeSelector:

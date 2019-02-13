@@ -44,6 +44,10 @@ See Zalenium's [usage examples](https://github.com/zalando/zalenium/blob/master/
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `persistence.sharedVolume.enabled` | Whether to use a single persistent volume claim for both video and data storage. | false |
+| `persistence.sharedVolume.useExisting` | Whether to use an existing persistent volume claim for both video and data storage. | false |
+| `persistence.sharedVolume.name` | The name of the existing persistent volume claim for the both video and data storage. | `` |
+| `persistence.sharedVolume.storageClass` | The name of the storage class to use for the video and data persistent volume claim. | `` |
 | `persistence.video.enabled` | Whether to use a persistent volume claim for video storage. | false |
 | `persistence.video.useExisting` | Whether to use an existing persistent volume claim for video storage. | false |
 | `persistence.video.name` | The name of the existing persistent volume claim for the video storage. | `` |
